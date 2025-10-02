@@ -8,8 +8,10 @@ class SampleJob implements IJob{
         this.name = this.constructor.name;
         this.payload = payload;
     }
-    handle = () => {
+    handle = (job?: Job) => {
         console.log("handler of the job");
+        console.log(this.payload);
+        if(job) console.log(job.name,job.id, job.data);
     };
     failed = (job?: Job): void=> {
         console.log("failed of the job");

@@ -1,10 +1,16 @@
 import express from 'express';
+import type {Express} from 'express';
 import serverconfig from './config/serverConfig.js';
 import apiRouter from './routes/index.js';
 import sampleQueueProducer from './producer/sampleQueueProducer.js';
-import { sampleWorker } from './workers/sampleWorker.js';
+import {sampleWorker}  from './workers/sampleWorker.js';
 import bullBoardAdapter from "./config/bullBoardConfig.js";
-const app = express()
+import bodyParser from 'body-parser';
+const app: Express = express()
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.text());
 app.use('/api', apiRouter);
 app.use('/ui', bullBoardAdapter.getRouter());
 app.listen(serverconfig.PORT, () => {

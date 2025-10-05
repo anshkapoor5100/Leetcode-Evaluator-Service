@@ -1,6 +1,5 @@
 import type { Job } from "bullmq";
 import type { IJob } from "../types/bullMqJobDefinition.js";
-
 class SampleJob implements IJob{
     name: string;
     payload: Record<string, unknown>;

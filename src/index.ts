@@ -20,5 +20,5 @@ app.listen(serverconfig.PORT, () => {
     sampleWorker('sampleQueue');
     
     const code = `x = input()\nprint(x, "this is onput")`
-    runPython(code,"2");
+    runPython(code,"2,3,4,5");
 });

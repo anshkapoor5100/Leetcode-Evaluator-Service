@@ -27,11 +27,15 @@ export async function runPython(code:string, inputTestcase:string){
     loggerStream.on('data',(data)=>{
         rawLogBuffer.push(data);
     })
-    loggerStream.on('end',()=>{
+    await new Promise((resolve, _)=>{
+        loggerStream.on('end',()=>{
         console.log(rawLogBuffer)
         const completeBuffer = Buffer.concat(rawLogBuffer);
         const decodedStream = decodeDockerStream(completeBuffer);
         console.log(decodedStream); 
+        resolve(decodedStream);
+        })
     })
+    await pythonDockerContainer.remove();
     return pythonDockerContainer;
 }

@@ -6,6 +6,7 @@ import sampleQueueProducer from './producer/sampleQueueProducer.js';
 import {sampleWorker}  from './workers/sampleWorker.js';
 import bullBoardAdapter from "./config/bullBoardConfig.js";
 import bodyParser from 'body-parser';
+import { runPython } from './containers/runPythonDocker.js';
 const app: Express = express()
 
 app.use(bodyParser.json());
@@ -18,16 +19,6 @@ app.listen(serverconfig.PORT, () => {
     console.log(`BullBoard dashboard running on: http://localhost:${serverconfig.PORT}/ui`);
     sampleWorker('sampleQueue');
     
-    sampleQueueProducer('SampleJob', { 
-      name:"ansh",
-      company: "Google",
-      role: "SDE",
-      location: "India"
-    },5);
-    sampleQueueProducer('SampleJob', { 
-      name:"kapoor",
-      company: "Amazon",
-      role: "SDE",
-      location: "India"
-    },18);
+    const code = `x = input()\nprint(x, "this is onput")`
+    runPython(code,"2");
 });

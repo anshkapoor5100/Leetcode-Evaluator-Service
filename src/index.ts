@@ -7,6 +7,8 @@ import {sampleWorker}  from './workers/sampleWorker.js';
 import bullBoardAdapter from "./config/bullBoardConfig.js";
 import bodyParser from 'body-parser';
 import { runPython } from './containers/runPythonDocker.js';
+import { runJava } from './containers/runJavaDocker.js';
+import { runCpp } from './containers/runCpp.js';
 const app: Express = express()
 
 app.use(bodyParser.json());
@@ -19,6 +21,16 @@ app.listen(serverconfig.PORT, () => {
     console.log(`BullBoard dashboard running on: http://localhost:${serverconfig.PORT}/ui`);
     sampleWorker('sampleQueue');
     
-    const code = `x = input()\nprint(x, "this is onput")`
-    runPython(code,"2,3,4,5");
+    const code = `
+    #include <bits/stdc++.h>
+    using namespace std;
+    int main(){
+        int x;
+        cin>>x;
+        for(int i=0; i<x; i++){
+            cout<<i<<" ";
+        }
+    }
+    `
+    runCpp(code,'10');
 });

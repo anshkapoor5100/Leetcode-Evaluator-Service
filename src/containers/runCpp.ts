@@ -26,15 +26,16 @@ export async function runCpp(code:string, inputTestcase:string){
     loggerStream.on('data',(data)=>{
         rawLogBuffer.push(data);
     })
-    await new Promise((resolve, _)=>{
+    const response = await new Promise((resolve)=>{
         loggerStream.on('end',()=>{
         console.log(rawLogBuffer)
         const completeBuffer = Buffer.concat(rawLogBuffer);
         const decodedStream = decodeDockerStream(completeBuffer);
         console.log(decodedStream); 
+        console.log(decodedStream.stdout); 
         resolve(decodedStream);
         })
     })
     await cppDockerContainer.remove();
-    return cppDockerContainer;
+    return response;
 }

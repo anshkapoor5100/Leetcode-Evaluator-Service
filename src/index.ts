@@ -9,6 +9,9 @@ import bodyParser from 'body-parser';
 import { runPython } from './containers/runPythonDocker.js';
 import { runJava } from './containers/runJavaDocker.js';
 import { runCpp } from './containers/runCpp.js';
+import { submissionWorker } from './workers/submissionWorker.js';
+import { submissionQueue } from './utils/constants.js';
+import submissionQueueProducer from './producer/submissionQueueProducer.js';
 const app: Express = express()
 
 app.use(bodyParser.json());
@@ -20,17 +23,41 @@ app.listen(serverconfig.PORT, () => {
     console.log(`app listening on port ${serverconfig.PORT}!`);
     console.log(`BullBoard dashboard running on: http://localhost:${serverconfig.PORT}/ui`);
     sampleWorker('sampleQueue');
-    
+    submissionWorker(submissionQueue);
+
+    const inputCase = '10';
+    const userCode = `
+    class Solution {
+    public:
+        vector<int> permute() {
+            vector<int>v;
+            for(int i=0;i<10;i++){
+                v.push_back(i);
+            }
+            return v;
+        }
+    };
+    `
     const code = `
     #include <bits/stdc++.h>
     using namespace std;
+    ${userCode}
     int main(){
-        int x;
-        cin>>x;
-        for(int i=0; i<x; i++){
+        Solution s;
+        vector<int>result = s.permute();
+        for(auto &i:result){
             cout<<i<<" ";
         }
+        cout<<endl;
+        return 0;
     }
     `
-    runCpp(code,'10');
+
+    submissionQueueProducer({"1234":{
+        language: "CPP",
+        inputCase,
+        code,
+
+    }})
+    // runCpp(code,'10');
 });
